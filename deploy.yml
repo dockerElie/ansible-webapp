@@ -1,0 +1,11 @@
+---
+- name: "Apache Installation using Docker"
+  hosts: prod
+  become: true
+  tasks:
+    - name: Create apache container
+      docker_container:
+        name: webapp
+        image: httpd
+        ports:
+          - "80:80"

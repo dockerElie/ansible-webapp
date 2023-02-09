@@ -2,10 +2,25 @@
 - name: "Apache Installation using Docker"
   hosts: prod
   become: true
+  pre_tasks:
+    - name: Install some packages
+      package: 
+        name: '{{ item }}'
+        state: present
+      when: ansible_distribution == "CentOS"
+      loop:
+        - wget
+        - git
   tasks:
+    - name: Copy website template
+      template:
+        src: index.html.j2
+        dest: /home/vagrant/www/index.html
     - name: Create apache container
       docker_container:
         name: webapp
         image: httpd
         ports:
           - "80:80"
+        volumes:
+          - /home/vagrant/www/index.html:/usr/local/apache2/htdocs/index.html
